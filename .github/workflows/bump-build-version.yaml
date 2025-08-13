@@ -42,6 +42,6 @@ jobs:
       - name: Add and commit new build version
         uses: EndBug/add-and-commit@v9
         with:
-          message: "Update ${{ inputs.build-config-file }} version to ${{ steps.bump-version.outputs.new_version }}"
+          message: "Update ${{ inputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }}"
 
 

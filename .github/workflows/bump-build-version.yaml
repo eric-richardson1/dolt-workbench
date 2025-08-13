@@ -37,7 +37,7 @@ jobs:
       - name: Update ${{ inputs.build-config-file }} buildVersion
         run: |
           yq -i '.buildVersion = "${{ steps.bump-version.outputs.new_version }}"' ${{ inputs.build-config-file }}
-          echo "New buildVersion in ${{ inputs.build-config-file }} is ${{ steps.bump-version.outputs.new_version }}
+          echo "New buildVersion in ${{ inputs.build-config-file }} is ${{ steps.bump-version.outputs.new_version }}"
 
       - name: Add and commit new build version
         uses: EndBug/add-and-commit@v9

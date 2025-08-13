@@ -35,7 +35,7 @@ jobs:
 
       - name: Update web/package.json version
         run: |
-          yq -i '.version = "${{ needs.format-version.outputs.version }}"'
+          yq -i '.version = "${{ needs.format-version.outputs.version }}"' web/package.json
 
       - name: Add and commit
         uses: EndBug/add-and-commit@v9

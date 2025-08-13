@@ -1,8 +1,38 @@
 name: Release dolt-workbench for Windows
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: GitHub Release Version Number
+        required: true
+        type: string
 
 jobs:
-  update-build-version:
+  update-windows-version:
     uses: ./.github/workflows/bump-build-version.yaml
     with:
       build-config-file: web/build/builder-win-config.yaml
+
+  build-windows:
+    needs: update-windows-version
+    name: Build Windows release version
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          yarn --cwd graphql-server
+          yarn --cwd graphql-server build
+          yarn --cwd web
+          yarn --cwd web download:dolt
+
+      - name: Build Windows package
+        run: |
+          yarn --cwd web build:win
+          ls dist
+
+
+
+

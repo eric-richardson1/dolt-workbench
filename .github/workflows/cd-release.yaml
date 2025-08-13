@@ -33,22 +33,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       - name: Update web/package.json version
         run: |
-          cd web
-          yarn version ${{ needs.format-version.outputs.version }}
+          yq -i '.version = "${{ needs.format-version.outputs.version }}"'
 
       - name: Add and commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: "Set web/package.json version to ${{ needs.format-version.outputs.version }}"
+          message: "Update web/package.json version to ${{ needs.format-version.outputs.version }}"
 
       - name: Create Release
         id: create_release

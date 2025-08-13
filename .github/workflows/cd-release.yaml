@@ -32,6 +32,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Update web/package.json version
+        run: |
+          cd web
+          yarn version ${{ needs.format-version.outputs.version }}
+
+      - name: Add and commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Set web/package.json version to ${{ needs.format-version.outputs.version }}"
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+
       - name: Create Release
         id: create_release
         uses: dolthub/create-release@v1
@@ -53,15 +73,3 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           event-type: release-notes
           client-payload: '{"version": "${{ needs.format-version.outputs.version }}", "release_id": "${{ needs.create-release.outputs.release_id }}"}'
-
-  docker-image-push:
-    needs: [ format-version, create-release ]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Trigger Push Docker Image
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          event-type: push-docker-image
-          client-payload: '{"version": "${{ needs.format-version.outputs.version }}"}'
-                    

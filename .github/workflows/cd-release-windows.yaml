@@ -22,22 +22,26 @@ jobs:
         uses: actions/checkout@v3
 
       - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
 
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Install dependencies
+      - name: Install graphql-server dependencies
+        working-directory: graphql-server
         run: |
-          yarn --cwd graphql-server
-          yarn --cwd graphql-server build
-          yarn --cwd web
-          yarn --cwd web download:dolt
+          yarn 
+          yarn build
+
+      - name: Install web dependencies
+        working-directory: web
+        run: |
+          yarn
+          yarn download:dolt
 
       - name: Build Windows package
+        working-directory: web
         run: |
-          yarn --cwd web build:win
+          yarn build:win
           ls dist
 
 

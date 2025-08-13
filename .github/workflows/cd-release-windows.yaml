@@ -1,0 +1,8 @@
+name: Release dolt-workbench for Windows
+on: workflow_dispatch
+
+jobs:
+  update-build-version:
+    uses: ./.github/workflows/bump-build-version.yaml
+    with:
+      build-config-file: web/build/builder-win-config.yaml

@@ -1,0 +1,41 @@
+name: Bump build version
+on:
+  workflow_dispatch:
+    inputs:
+      build-config-file:
+        description: File path to the builder config yaml file
+        required: true
+        type: string
+
+  workflow_call:
+    inputs:
+      build-config-file:
+        required: true
+        type: string
+
+jobs:
+  bump-build-version:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get current build version
+        id: current-build-version
+        run: |
+          version="$(yq '.buildVersion' ${{ inputs.build-config-file }})"
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Update web/build/${{ inputs.build-config-file }} buildVersion
+        uses: "actions-ecosystem/action-bump-semver@v1"
+        id: bump-version
+        with:
+          current_version: ${{ steps.current-build-version.outputs.version }}
+          level: patch
+
+      - name: Add and commit new build version
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Update web/build/${{ inputs.build-config-file }} version to ${{ needs.format-version.outputs.version }}"
+
+

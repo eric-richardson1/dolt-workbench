@@ -37,7 +37,7 @@ jobs:
         run: |
           yq -i '.version = "${{ needs.format-version.outputs.version }}"' web/package.json
 
-      - name: Add and commit
+      - name: Add and commit new version
         uses: EndBug/add-and-commit@v9
         with:
           message: "Update web/package.json version to ${{ needs.format-version.outputs.version }}"

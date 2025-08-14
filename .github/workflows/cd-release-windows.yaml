@@ -24,17 +24,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "latest"
+          cache: 'yarn'
+          cache-dependency-path: |
+            graphql-server/yarn.lock
+            web/yarn.lock
 
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Cache Next build
+      - name: Cache Yarn global cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/web/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          path: |
+            ~/.yarn/berry/cache
+            .yarn/cache
+          key: yarn-cache-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+            yarn-cache-${{ runner.os }}-
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            web/renderer/.next/cache
+            web/.next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('web/renderer/next.config.js', 'web/package.json', 'web/yarn.lock') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-
 
       - name: Install graphql-server dependencies
         working-directory: graphql-server
@@ -59,17 +75,4 @@ jobs:
         with:
           tag_name: v${{ inputs.release-version }}
           files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
-
-      - name: TESTING
-        run: |
-          pwd
-          echo "BASE:"
-          ls ${{ github.workspace }}/
-          echo "WEB:"
-          ls ${{ github.workspace }}/web
-          echo "DIST:"
-          ls ${{ github.workspace }}/web/dist
-
-
-
 

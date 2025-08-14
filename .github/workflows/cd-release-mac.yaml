@@ -25,6 +25,14 @@ jobs:
     name: Build Mac App Store release version
     runs-on: macos-14
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "latest"
+
       - name: Download provisioning profiles
         id: download-provisioning-profiles
         uses: apple-actions/download-provisioning-profiles@v4
@@ -39,19 +47,8 @@ jobs:
         run: |
           JSON='${{ steps.download-provisioning-profiles.outputs.profiles }}'
           UDID=$(echo $JSON | jq -r '.[0].udid')
-          echo "FROM:"
-          ls "$HOME/Library/MobileDevice/Provisioning Profiles/"
-          echo "TO:"
-          ls "/web/build/mac/"
-          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "/web/build/mac/MacAppStore.provisionprofile"
-          ls /web/build/mac
-          
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "latest"
+          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
+          ls "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
 
       - name: Enable Corepack
         run: corepack enable

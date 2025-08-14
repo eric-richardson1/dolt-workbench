@@ -66,3 +66,9 @@ jobs:
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
 
+  generate-release-notes:
+    needs: create-release
+    uses: ./.github/workflows/cd-create-release-notes.yaml
+    with:
+      release-version: ${{ needs.create-release.outputs.release_version }}
+

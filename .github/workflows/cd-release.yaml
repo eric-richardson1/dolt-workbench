@@ -45,14 +45,13 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: dolthub/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.format-version.outputs.version }}
-          release_name: ${{ needs.format-version.outputs.version }}
+          name: ${{ needs.format-version.outputs.version }}
           draft: false
           prerelease: false
+          generate_release_notes: true
 
   build-windows:
     needs: create-release
@@ -65,10 +64,3 @@ jobs:
     uses: ./.github/workflows/cd-release-linux.yaml
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
-
-  generate-release-notes:
-    needs: create-release
-    uses: ./.github/workflows/cd-create-release-notes.yaml
-    with:
-      release-version: ${{ needs.create-release.outputs.release_version }}
-

@@ -16,6 +16,9 @@ on:
 jobs:
   bump-build-version:
     runs-on: ubuntu-22.04
+    concurrency:
+      group: bump-version
+      cancel-in-progress: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

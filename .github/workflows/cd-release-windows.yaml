@@ -58,7 +58,17 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.release-version }}
-          files: /web/dist/Dolt-Workbench-win-x64.exe
+          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
+
+      - name: TESTING
+        run: |
+          pwd
+          echo "BASE:"
+          ls ${{ github.workspace }}/
+          echo "WEB:"
+          ls ${{ github.workspace }}/web
+          echo "DIST:"
+          ls ${{ github.workspace }}/web/dist
 
 
 

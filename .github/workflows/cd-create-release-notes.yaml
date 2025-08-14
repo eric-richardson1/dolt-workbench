@@ -3,13 +3,13 @@ name: Create Release Notes
 on:
   workflow_dispatch:
     inputs:
-      version:
+      release-version:
         description: GitHub release version
         required: true
         type: string
   workflow_call:
     inputs:
-      version:
+      release-version:
         description: GitHub release version
         required: true
         type: string
@@ -31,9 +31,9 @@ jobs:
       - name: Create Notes
         id: create-notes
         run: |
-          echo "notes=$(./gen_release_notes.pl dolthub/dolt-workbench v${{ inputs.version }})" >> $GITHUB_OUTPUT
+          echo "notes=$(./gen_release_notes.pl dolthub/dolt-workbench v${{ inputs.release-version }})" >> $GITHUB_OUTPUT
       - name: Post Changelog to Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ inputs.version }}
+          tag_name: v${{ inputs.release-version }}
           body: ${{ steps.create-notes.outputs.notes }}

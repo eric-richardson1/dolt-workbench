@@ -31,6 +31,7 @@ jobs:
       - name: Create Notes
         id: create-notes
         run: |
+          git clone https://github.com/eric-richardson1/dolt-workbench.git
           echo "notes=$(./gen_release_notes.pl eric-richardson1/dolt-workbench v${{ inputs.release-version }})" >> $GITHUB_OUTPUT
           echo $notes
       - name: Post Changelog to Release

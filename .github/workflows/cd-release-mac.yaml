@@ -35,10 +35,13 @@ jobs:
           api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
 
-      - name: TEST
+      - name: Move provision profile to build directory
         run: |
-          echo "${{ steps.download-provisioning-profiles.outputs.profiles }}"
-
+          JSON=${{ steps.download-provisioning-profiles.outputs.profiles }}
+          UDID=$(echo $JSON | jq -r '.[0].udid')
+          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
+          ls ${{ github.workspace }}/web/build/mac
+          
       - name: Checkout code
         uses: actions/checkout@v3
 

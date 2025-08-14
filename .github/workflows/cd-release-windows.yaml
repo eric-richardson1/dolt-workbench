@@ -21,6 +21,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: "latest"
@@ -28,9 +31,6 @@ jobs:
           cache-dependency-path: |
             graphql-server/yarn.lock
             web/yarn.lock
-
-      - name: Enable Corepack
-        run: corepack enable
 
       - name: Cache Yarn global cache
         uses: actions/cache@v4

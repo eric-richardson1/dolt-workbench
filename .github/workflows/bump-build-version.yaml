@@ -43,6 +43,6 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: "Update ${{ inputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }}"
-          pull: --rebase
+          pull: origin main
 
 

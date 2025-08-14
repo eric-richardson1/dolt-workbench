@@ -20,11 +20,6 @@ jobs:
     with:
       build-config-file: web/build/builder-mas-config.yaml
 
-  update-dmg-version:
-    uses: ./.github/workflows/bump-build-version.yaml
-    with:
-      build-config-file: web/build/builder-dmg-config.yaml
-
   build-mas:
     needs: update-mas-version
     name: Build Mac App Store release version
@@ -36,7 +31,7 @@ jobs:
           bundle-id: com.dolthub.dolt-workbench
           profile-type: MAC_APP_STORE
           issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ vars.APPSTORE_KEY_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
 
       - name: Checkout code

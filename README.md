@@ -1,4 +1,4 @@
-# dolt-workbench
+# dolt-workbench 
 
 A modern, browser-based, open source SQL workbench for your MySQL and PostgreSQL
 compatible databases. Use [Dolt](https://doltdb.com) or

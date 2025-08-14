@@ -32,6 +32,7 @@ jobs:
         id: create-notes
         run: |
           echo "notes=$(./gen_release_notes.pl eric-richardson1/dolt-workbench v${{ inputs.release-version }})" >> $GITHUB_OUTPUT
+          echo $notes
       - name: Post Changelog to Release
         uses: softprops/action-gh-release@v2
         with:

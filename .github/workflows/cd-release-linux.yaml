@@ -1,4 +1,4 @@
-name: Build dolt-workbench for Windows
+name: Build dolt-workbench for Linux
 on:
   workflow_dispatch:
     inputs:
@@ -15,15 +15,15 @@ on:
         type: string
 
 jobs:
-  update-windows-version:
+  update-linux-version:
     uses: ./.github/workflows/bump-build-version.yaml
     with:
-      build-config-file: web/build/builder-win-config.yaml
+      build-config-file: web/build/builder-linux-config.yaml
 
-  build-windows:
-    needs: update-windows-version
-    name: Build Windows release version
-    runs-on: windows-2022
+  build-linux:
+    needs: update-linux-version
+    name: Build Linux release version
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -57,14 +57,16 @@ jobs:
           yarn
           yarn download:dolt
 
-      - name: Build Windows package
+      - name: Build Linux package
         working-directory: web
         run: |
-          yarn build:win
+          yarn build:linux
           ls dist
 
       - name: Upload package to Release ${{ inputs.release-version }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.release-version }}
-          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
+          files: | 
+            ${{ github.workspace }}/web/dist/Dolt-Workbench-linux-x86_64.AppImage
+            ${{ github.workspace }}/web/dist/Dolt-Workbench-linux-arm64.AppImage

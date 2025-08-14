@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       release_id: ${{ steps.create_release.outputs.id }}
+      release_version: ${{ needs.format-version.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,3 +53,16 @@ jobs:
           release_name: ${{ needs.format-version.outputs.version }}
           draft: false
           prerelease: false
+
+  build-windows:
+    needs: create-release
+    uses: ./.github/workflows/cd-release-windows.yaml
+    with:
+      release-version: ${{ needs.create-release.outputs.release_version }}
+
+  build-linux:
+    needs: create-release
+    uses: ./.github/workflows/cd-release-linux.yaml
+    with:
+      release-version: ${{ needs.create-release.outputs.release_version }}
+

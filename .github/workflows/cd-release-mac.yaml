@@ -37,9 +37,12 @@ jobs:
 
       - name: Move provision profile to build directory
         run: |
-          ls "$HOME/Library/MobileDevice/Provisioning Profiles"
           JSON='${{ steps.download-provisioning-profiles.outputs.profiles }}'
           UDID=$(echo $JSON | jq -r '.[0].udid')
+          echo "FROM:"
+          ls "$HOME/Library/MobileDevice/Provisioning Profiles/"
+          echo "TO:"
+          ls "${{ github.workspace }}/web/build/mac/"
           mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
           ls ${{ github.workspace }}/web/build/mac
           

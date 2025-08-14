@@ -77,6 +77,8 @@ jobs:
 
       - name: Install web dependencies
         working-directory: web
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           yarn
           yarn download:dolt

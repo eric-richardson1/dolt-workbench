@@ -42,9 +42,9 @@ jobs:
           echo "FROM:"
           ls "$HOME/Library/MobileDevice/Provisioning Profiles/"
           echo "TO:"
-          ls "${{ github.workspace }}/web/build/mac/"
-          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
-          ls ${{ github.workspace }}/web/build/mac
+          ls "/web/build/mac/"
+          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "/web/build/mac/MacAppStore.provisionprofile"
+          ls /web/build/mac
           
       - name: Checkout code
         uses: actions/checkout@v3

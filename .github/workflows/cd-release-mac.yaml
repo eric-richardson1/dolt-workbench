@@ -26,6 +26,7 @@ jobs:
     runs-on: macos-14
     steps:
       - name: Download provisioning profiles
+        id: download-provisioning-profiles
         uses: apple-actions/download-provisioning-profiles@v4
         with:
           bundle-id: com.dolthub.dolt-workbench
@@ -33,6 +34,10 @@ jobs:
           issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+
+      - name: TEST
+        run: |
+          echo "${{ steps.download-provisioning-profiles.outputs.profiles }}"
 
       - name: Checkout code
         uses: actions/checkout@v3

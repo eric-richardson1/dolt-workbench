@@ -15,14 +15,14 @@ on:
         type: string
 
 jobs:
-  update-mas-version:
+  update-dmg-version:
     uses: ./.github/workflows/bump-build-version.yaml
     with:
-      build-config-file: web/build/builder-mas-config.yaml
+      build-config-file: web/build/builder-dmg-config.yaml
 
-  build-mas:
-    needs: update-mas-version
-    name: Build Mac App Store release version
+  build-dmg:
+    needs: update-dmg-version
+    name: Build Mac release version
     runs-on: macos-14
     steps:
 
@@ -38,7 +38,7 @@ jobs:
         uses: apple-actions/download-provisioning-profiles@v4
         with:
           bundle-id: com.dolthub.dolt-workbench
-          profile-type: MAC_APP_STORE
+          profile-type: MAC_APP_DEVELOPMENT
           issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
@@ -47,8 +47,7 @@ jobs:
         run: |
           JSON='${{ steps.download-provisioning-profiles.outputs.profiles }}'
           UDID=$(echo $JSON | jq -r '.[0].udid')
-          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
-          ls "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
+          mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/AppleDevelopment.provisionprofile"
 
       - name: Import codesign certificates
         uses: apple-actions/import-codesign-certs@v3
@@ -83,15 +82,15 @@ jobs:
           yarn
           yarn download:dolt
 
-      - name: Build MAS package
+      - name: Build dmg package
         working-directory: web
         run: |
-          yarn build:mas
+          yarn build:dmg
           ls dist
 
-#      - name: Upload package to Release ${{ inputs.release-version }}
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          tag_name: v${{ inputs.release-version }}
-#          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
-#
+      - name: Upload package to Release ${{ inputs.release-version }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.release-version }}
+          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
+

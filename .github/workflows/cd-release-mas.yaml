@@ -49,12 +49,6 @@ jobs:
           UDID=$(echo $JSON | jq -r '.[0].udid')
           mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/MacAppStore.provisionprofile"
 
-#      - name: Import codesign certificates
-#        uses: apple-actions/import-codesign-certs@v3
-#        with:
-#          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
-#          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
-
       - name: Enable Corepack
         run: corepack enable
 
@@ -90,15 +84,5 @@ jobs:
           CSC_INSTALLER_LINK: ${{ secrets.MAS_INSTALLER_CERT_BASE64 }}
           CSC_INSTALLER_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
+          ulimit -n 65536
           yarn build:mas
-          echo "DIST:"
-          ls dist
-          echo "inside mas-universal"
-          ls dist/mas-universal
-
-#      - name: Upload package to Release ${{ inputs.release-version }}
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          tag_name: v${{ inputs.release-version }}
-#          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
-#

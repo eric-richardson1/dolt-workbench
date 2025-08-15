@@ -84,7 +84,21 @@ jobs:
         run: |
           ulimit -n 65536
           yarn build:dmg
-          ls dist
+
+      - name: Create .env file for signing
+        working-directory: web/build/mac
+        run: |
+          cat > .env <<'EOF'
+          SIGNING_CERTIFICATE=Developer ID Application: DoltHub Inc (${{ vars.TEAM_ID }})
+          TEAM_ID=${{ vars.TEAM_ID }}
+          APPLE_ID=${{ vars.APPLE_ID }}
+          APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}
+          EOF
+
+      - name: Sign and notarize
+        working-directory: web
+        run: |
+          yarn sign-dmg
 
       - name: Upload package to Release ${{ inputs.release-version }}
         uses: softprops/action-gh-release@v2

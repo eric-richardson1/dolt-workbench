@@ -53,6 +53,18 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
+  build-mas:
+    needs: create-release
+    uses: ./.github/workflows/cd-release-mas.yaml
+    with:
+      release-version: ${{ needs.create-release.outputs.release_version }}
+
+  build-dmg:
+    needs: create-release
+    uses: ./.github/workflows/cd-release-dmg.yaml
+    with:
+      release-version: ${{ needs.create-release.outputs.release_version }}
+
   build-windows:
     needs: create-release
     uses: ./.github/workflows/cd-release-windows.yaml
@@ -64,3 +76,4 @@ jobs:
     uses: ./.github/workflows/cd-release-linux.yaml
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
+

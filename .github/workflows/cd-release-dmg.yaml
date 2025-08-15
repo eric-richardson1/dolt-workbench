@@ -84,6 +84,9 @@ jobs:
 
       - name: Build dmg package
         working-directory: web
+        env:
+          CSC_LINK: ${{ secrets.DEV_ID_CERT_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
           yarn build:dmg
           ls dist
@@ -92,5 +95,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.release-version }}
-          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
-
+          files: ${{ github.workspace }}/web/dist/DoltWorkbench-mac-arm64.dmg

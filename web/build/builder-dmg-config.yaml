@@ -40,8 +40,32 @@ files:
 extraFiles:
   - from: ../graphql-server/dist
     to: graphql-server/dist
+    filter:
+      - "**/*"
+      - "!**/*.ts"
+      - "!**/*.d.ts"
+      - "!**/*.map"
+      - "!**/__tests__/**"
+      - "!**/test/**"
+      - "!**/docs/**"
+      - "!**/examples/**"
+      - "!**/*.md"
+      - "!**/CHANGELOG*"
+      - "!**/README*"
   - from: ../graphql-server/node_modules
     to: graphql-server/node_modules
+    filter:
+      - "**/*"
+      - "!**/*.ts"
+      - "!**/*.d.ts"
+      - "!**/*.map"
+      - "!**/__tests__/**"
+      - "!**/test/**"
+      - "!**/docs/**"
+      - "!**/examples/**"
+      - "!**/*.md"
+      - "!**/CHANGELOG*"
+      - "!**/README*"
   - from: build/mac/Assets.car
     to: Resources/Assets.car
   - from: build/mac/AppIcon.icns
@@ -65,4 +89,3 @@ mac:
   entitlements: build/mac/entitlements.plist
   entitlementsInherit: build/mac/entitlements.inherit.plist
 electronVersion: 31.7.1
-asar: false

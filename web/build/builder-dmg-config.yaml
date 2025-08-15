@@ -65,3 +65,4 @@ mac:
   entitlements: build/mac/entitlements.plist
   entitlementsInherit: build/mac/entitlements.inherit.plist
 electronVersion: 31.7.1
+asar: false

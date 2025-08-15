@@ -88,7 +88,6 @@ jobs:
           CSC_LINK: ${{ secrets.DEV_ID_CERT_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
-          ulimit -n 65536
           yarn build:dmg
 
       - name: Create .env file for signing

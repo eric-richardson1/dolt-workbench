@@ -84,7 +84,6 @@ jobs:
           CSC_INSTALLER_LINK: ${{ secrets.MAS_INSTALLER_CERT_BASE64 }}
           CSC_INSTALLER_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
-          ulimit -n 65536
           yarn build:mas
 
       - name: Upload package to Release ${{ inputs.release-version }}

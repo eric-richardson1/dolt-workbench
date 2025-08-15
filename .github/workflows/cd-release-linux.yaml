@@ -15,18 +15,17 @@ on:
         type: string
 
 jobs:
-  update-linux-version:
-    uses: ./.github/workflows/bump-build-version.yaml
-    with:
-      build-config-file: web/build/builder-linux-config.yaml
-
   build-linux:
-    needs: update-linux-version
     name: Build Linux release version
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Bump linux build version
+        uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-linux-config.yaml
 
       - uses: actions/setup-node@v4
         with:
@@ -70,3 +69,17 @@ jobs:
           files: | 
             ${{ github.workspace }}/web/dist/Dolt-Workbench-linux-x86_64.AppImage
             ${{ github.workspace }}/web/dist/Dolt-Workbench-linux-arm64.AppImage
+
+  commit-build-version:
+    name: Commit new build version
+    needs: build-linux
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: commit-build-version
+      cancel-in-progress: false
+    steps:
+      - uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-linux-config.yaml
+          commit: true
+

@@ -15,18 +15,18 @@ on:
         type: string
 
 jobs:
-  update-mas-version:
-    uses: ./.github/workflows/bump-build-version.yaml
-    with:
-      build-config-file: web/build/builder-mas-config.yaml
-
   build-mas:
-    needs: update-mas-version
     name: Build Mac App Store release version
     runs-on: macos-14
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Bump MAS build version
+        id: bump-mas-version
+        uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-mas-config.yaml
 
       - uses: actions/setup-node@v4
         with:
@@ -89,9 +89,21 @@ jobs:
           echo "mas-universal":
           ls dist/mas-universal
           
-
       - name: Upload package to Release ${{ inputs.release-version }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.release-version }}
-          files: ${{ github.workspace }}/web/dist/mas-universal/DoltWorkbench-mac-universal-${{ needs.update-mas-version.outputs.new-version }}.pkg
+          files: ${{ github.workspace }}/web/dist/mas-universal/DoltWorkbench-mac-universal-${{ steps.bump-mas-version.outputs.new-version }}.pkg
+
+  commit-build-version:
+    name: Commit new build version
+    needs: build-mas
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: commit-build-version
+      cancel-in-progress: false
+    steps:
+      - uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-mas-config.yaml
+          commit: true

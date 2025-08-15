@@ -15,19 +15,17 @@ on:
         type: string
 
 jobs:
-  update-dmg-version:
-    uses: ./.github/workflows/bump-build-version.yaml
-    with:
-      build-config-file: web/build/builder-dmg-config.yaml
-
   build-dmg:
-    needs: update-dmg-version
     name: Build Mac release version
     runs-on: macos-14
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Bump build version
+        uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-dmg-config.yaml
 
       - uses: actions/setup-node@v4
         with:
@@ -110,3 +108,16 @@ jobs:
         with:
           tag_name: v${{ inputs.release-version }}
           files: ${{ github.workspace }}/web/dist/DoltWorkbench-mac-arm64.dmg
+
+  commit-build-version:
+    name: Commit new build version
+    needs: build-dmg
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: commit-build-version
+      cancel-in-progress: false
+    steps:
+      - uses: ./.github/actions/bump-build-version
+        with:
+          build-config-file: web/build/builder-dmg-config.yaml
+          commit: true

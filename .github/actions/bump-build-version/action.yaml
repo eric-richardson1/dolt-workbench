@@ -24,11 +24,11 @@ runs:
       shell: bash
 
     - name: Bump version
-      uses: cbrgm/semver-bump-action@v1
+      uses: "actions-ecosystem/action-bump-semver@v1"
       id: bump-version
       with:
-        current-version: ${{ steps.current-build-version.outputs.version }}
-        bump-level: patch
+        current_version: ${{ steps.current-build-version.outputs.version }}
+        level: patch
 
     - name: Update ${{ inputs.build-config-file }} buildVersion
       run: |

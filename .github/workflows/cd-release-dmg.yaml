@@ -89,10 +89,10 @@ jobs:
         working-directory: web/build/mac
         run: |
           cat > .env <<'EOF'
-          SIGNING_CERTIFICATE=Developer ID Application: DoltHub Inc (${{ vars.TEAM_ID }})
-          TEAM_ID=${{ vars.TEAM_ID }}
-          APPLE_ID=${{ vars.APPLE_ID }}
-          APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}
+          SIGNING_CERTIFICATE="Developer ID Application: DoltHub Inc (${{ vars.TEAM_ID }})"
+          TEAM_ID="${{ vars.TEAM_ID }}"
+          APPLE_ID="${{ vars.APPLE_ID }}"
+          APPLE_ID_PASSWORD="${{ secrets.APPLE_ID_PASSWORD }}"
           EOF
 
       - name: Sign and notarize

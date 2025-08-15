@@ -117,6 +117,8 @@ jobs:
       group: commit-build-version
       cancel-in-progress: false
     steps:
+      - uses: actions/checkout@v3
+
       - uses: ./.github/actions/bump-build-version
         with:
           build-config-file: web/build/builder-dmg-config.yaml

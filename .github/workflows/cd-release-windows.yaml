@@ -17,7 +17,7 @@ on:
 jobs:
   build-windows:
     name: Build Windows release version
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -70,7 +70,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.release-version }}
-          files: ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
+          files: |
+            ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.exe
+            ${{ github.workspace }}/web/dist/Dolt-Workbench-win-x64.appx
 
   commit-build-version:
     name: Commit new build version

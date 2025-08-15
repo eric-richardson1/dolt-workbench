@@ -25,9 +25,6 @@ jobs:
     name: Build Mac App Store release version
     runs-on: macos-14
     steps:
-      - run: |
-          echo "BUMPED VERSION IS: ${{ needs.update-mas-version.outputs.new-version }}"
-
       - name: Checkout code
         uses: actions/checkout@v3
 

@@ -49,6 +49,12 @@ jobs:
           UDID=$(echo $JSON | jq -r '.[0].udid')
           mv "$HOME/Library/MobileDevice/Provisioning Profiles/$UDID.provisionprofile" "${{ github.workspace }}/web/build/mac/AppleDevelopment.provisionprofile"
 
+      - name: Import codesign certs
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+
       - name: Enable Corepack
         run: corepack enable
 

@@ -12,6 +12,10 @@ on:
       build-config-file:
         required: true
         type: string
+    outputs:
+      new-version:
+        description: The bumped build version
+        value: ${{ jobs.bump-build-version.outputs.new-version }}
 
 jobs:
   bump-build-version:

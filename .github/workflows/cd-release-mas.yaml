@@ -25,6 +25,8 @@ jobs:
     name: Build Mac App Store release version
     runs-on: macos-14
     steps:
+      - run: |
+          echo "BUMPED VERSION IS: ${{ needs.update-mas-version.outputs.new-version }}"
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -84,7 +86,6 @@ jobs:
           CSC_INSTALLER_LINK: ${{ secrets.MAS_INSTALLER_CERT_BASE64 }}
           CSC_INSTALLER_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
-          echo "BUMPED VERSION IS: ${{ needs.update-mas-version.outputs.new-version }}"
           yarn build:mas
 
       - name: Upload package to Release ${{ inputs.release-version }}

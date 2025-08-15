@@ -82,7 +82,7 @@ jobs:
           CSC_LINK: ${{ secrets.DEV_ID_CERT_BASE64 }}
           CSC_KEY_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
         run: |
-          ulimit -n 8192
+          ulimit -n 65536
           yarn build:dmg
           ls dist
 

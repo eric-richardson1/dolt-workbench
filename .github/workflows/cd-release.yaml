@@ -56,24 +56,28 @@ jobs:
   build-mas:
     needs: create-release
     uses: ./.github/workflows/cd-release-mas.yaml
+    secrets: inherit
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
 
   build-dmg:
     needs: create-release
     uses: ./.github/workflows/cd-release-dmg.yaml
+    secrets: inherit
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
 
   build-windows:
     needs: create-release
     uses: ./.github/workflows/cd-release-windows.yaml
+    secrets: inherit
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
 
   build-linux:
     needs: create-release
     uses: ./.github/workflows/cd-release-linux.yaml
+    secrets: inherit
     with:
       release-version: ${{ needs.create-release.outputs.release_version }}
 

@@ -68,6 +68,23 @@ jobs:
             throw
           }
 
+          # Test the authentication by getting app info first
+          Write-Host "Testing authentication by getting app information..."
+          try {
+            $app = Get-Application -AppId $env:APP_ID -Verbose
+            Write-Host "Successfully retrieved app info: $($app.primaryName)"
+          } catch {
+            Write-Host "Failed to get app info: $($_.Exception.Message)"
+            Write-Host "Full error details: $($_.Exception)"
+            
+            # Try to get more specific error information
+            if ($_.Exception.Response) {
+              Write-Host "HTTP Status: $($_.Exception.Response.StatusCode)"
+              Write-Host "HTTP Reason: $($_.Exception.Response.ReasonPhrase)"
+            }
+            throw
+          }
+
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           
           echo $submission

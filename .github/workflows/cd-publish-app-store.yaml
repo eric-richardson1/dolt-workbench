@@ -66,22 +66,39 @@ jobs:
             grant_type = "client_credentials"
             client_id = $env:CLIENT_ID
             client_secret = $env:CLIENT_SECRET
-            scope = "https://api.store.microsoft.com/.default"
+            scope = "https://manage.devcenter.microsoft.com/.default"
+          }
+          
+          Write-Host "Also testing with legacy endpoint and resource..."
+          $legacyTokenUrl = "https://login.microsoftonline.com/$env:TENANT_ID/oauth2/token"
+          $legacyBody = @{
+            grant_type = "client_credentials"
+            client_id = $env:CLIENT_ID
+            client_secret = $env:CLIENT_SECRET
+            resource = "https://manage.devcenter.microsoft.com"
           }
           
           try {
             $response = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $body -ContentType "application/x-www-form-urlencoded"
-            Write-Host "OAuth2 token request successful"
+            Write-Host "OAuth2 v2.0 token request successful with devcenter scope"
           } catch {
-            Write-Host "OAuth2 token request failed: $($_.Exception.Message)"
+            Write-Host "OAuth2 v2.0 token request failed: $($_.Exception.Message)"
             if ($_.ErrorDetails.Message) {
               Write-Host "Error details: $($_.ErrorDetails.Message)"
             }
-            if ($_.Exception.Response) {
-              Write-Host "HTTP Status: $($_.Exception.Response.StatusCode)"
-              Write-Host "HTTP Reason: $($_.Exception.Response.ReasonPhrase)"
+            
+            # Try legacy endpoint
+            Write-Host "Trying legacy OAuth2 endpoint..."
+            try {
+              $legacyResponse = Invoke-RestMethod -Uri $legacyTokenUrl -Method Post -Body $legacyBody -ContentType "application/x-www-form-urlencoded"
+              Write-Host "Legacy OAuth2 token request successful"
+            } catch {
+              Write-Host "Legacy OAuth2 token request also failed: $($_.Exception.Message)"
+              if ($_.ErrorDetails.Message) {
+                Write-Host "Legacy error details: $($_.ErrorDetails.Message)"
+              }
+              throw
             }
-            throw
           }
 
           Write-Host "Attempting to authenticate with Microsoft Store..."

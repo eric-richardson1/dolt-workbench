@@ -59,29 +59,36 @@ jobs:
 
           $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
 
+          # Test OAuth2 token directly to get better error information
+          Write-Host "Testing OAuth2 token request directly..."
+          $tokenUrl = "https://login.microsoftonline.com/$env:TENANT_ID/oauth2/v2.0/token"
+          $body = @{
+            grant_type = "client_credentials"
+            client_id = $env:CLIENT_ID
+            client_secret = $env:CLIENT_SECRET
+            scope = "https://api.store.microsoft.com/.default"
+          }
+          
+          try {
+            $response = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $body -ContentType "application/x-www-form-urlencoded"
+            Write-Host "OAuth2 token request successful"
+          } catch {
+            Write-Host "OAuth2 token request failed: $($_.Exception.Message)"
+            if ($_.Exception.Response) {
+              $stream = $_.Exception.Response.GetResponseStream()
+              $reader = New-Object System.IO.StreamReader($stream)
+              $responseBody = $reader.ReadToEnd()
+              Write-Host "Response body: $responseBody"
+            }
+            throw
+          }
+
           Write-Host "Attempting to authenticate with Microsoft Store..."
           try {
             Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred -Verbose
             Write-Host "Authentication successful"
           } catch {
             Write-Host "Authentication failed: $($_.Exception.Message)"
-            throw
-          }
-
-          # Test the authentication by getting app info first
-          Write-Host "Testing authentication by getting app information..."
-          try {
-            $app = Get-Application -AppId $env:APP_ID -Verbose
-            Write-Host "Successfully retrieved app info: $($app.primaryName)"
-          } catch {
-            Write-Host "Failed to get app info: $($_.Exception.Message)"
-            Write-Host "Full error details: $($_.Exception)"
-            
-            # Try to get more specific error information
-            if ($_.Exception.Response) {
-              Write-Host "HTTP Status: $($_.Exception.Response.StatusCode)"
-              Write-Host "HTTP Reason: $($_.Exception.Response.ReasonPhrase)"
-            }
             throw
           }
 

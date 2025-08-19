@@ -74,11 +74,12 @@ jobs:
             Write-Host "OAuth2 token request successful"
           } catch {
             Write-Host "OAuth2 token request failed: $($_.Exception.Message)"
+            if ($_.ErrorDetails.Message) {
+              Write-Host "Error details: $($_.ErrorDetails.Message)"
+            }
             if ($_.Exception.Response) {
-              $stream = $_.Exception.Response.GetResponseStream()
-              $reader = New-Object System.IO.StreamReader($stream)
-              $responseBody = $reader.ReadToEnd()
-              Write-Host "Response body: $responseBody"
+              Write-Host "HTTP Status: $($_.Exception.Response.StatusCode)"
+              Write-Host "HTTP Reason: $($_.Exception.Response.ReasonPhrase)"
             }
             throw
           }

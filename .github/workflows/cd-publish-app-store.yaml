@@ -36,35 +36,33 @@ jobs:
           github-token: ${{ github.token }}
           run-id: ${{ inputs.workflow-run-id }}
 
-      - name: Debug
+      - name: Publish to Microsoft Store
+        shell: pwsh
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.MICROSOFT_CLIENT_SECRET }}
+          APP_ID: ${{ secrets.STORE_APP_ID }}
+          APPX_PATH: ${{ steps.download-artifact.outputs.download-path }}
         run: |
-          ls ${{ steps.download-artifact.outputs.download-path }}
-        
+          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
 
-#      - name: Publish to Microsoft Store
-#        shell: pwsh
-#        env:
-#          TENANT_ID: ${{ secrets.TENANT_ID }}
-#          CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
-#          CLIENT_SECRET: ${{ secrets.MICROSOFT_CLIENT_SECRET }}
-#          APP_ID: ${{ secrets.STORE_APP_ID }}
-#          APPX_PATH: ${{ steps.download-artifact.outputs.download-path }}
-#        run: |
-#          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-#
-#          Install-Module -Name StoreBroker
-#
-#          $clientSecret = ConvertTo-SecureString $env:CLIENT_SECRET -AsPlainText -Force
-#
-#          $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
-#
-#          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred
-#
-#
-#          $submission = New-ApplicationSubmission -AppId <appId> -Force
-#
-#          $submission.listings["en-us"].baseListing.releaseNotes = "this is a test submission"
-#
+          Install-Module -Name StoreBroker
+
+          $clientSecret = ConvertTo-SecureString $env:CLIENT_SECRET -AsPlainText -Force
+
+          $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
+
+          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred
+
+          $submission = New-ApplicationSubmission -AppId <appId> -Force
+          
+          echo $submission
+
+          $submission.listings["en-us"].baseListing.releaseNotes = "this is a test submission"
+          
+          echo $submission
+
 #          $submission = Add-ApplicationPackage -AppId $env:APP_ID -Submission $submission -FilePath $env:APPX_PATH
 #
 #          $submission = Update-ApplicationSubmission -AppId $env:APP_ID -Submission $submission

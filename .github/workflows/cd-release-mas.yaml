@@ -89,11 +89,13 @@ jobs:
           echo "mas-universal":
           ls dist/mas-universal
           
-      - name: Upload package to Release ${{ inputs.release-version }}
-        uses: softprops/action-gh-release@v2
+      - name: Upload app store artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: v${{ inputs.release-version }}
-          files: ${{ github.workspace }}/web/dist/mas-universal/DoltWorkbench-mac-universal-${{ steps.bump-mas-version.outputs.new-version }}.pkg
+          name: mac-${{ inputs.release-version }}
+          path: ${{ github.workspace }}/web/dist/mas-universal/DoltWorkbench-mac-universal-${{ steps.bump-mas-version.outputs.new-version }}.pkg
+          retention-days: 90
+          overwrite: true
 
   commit-build-version:
     name: Commit new build version

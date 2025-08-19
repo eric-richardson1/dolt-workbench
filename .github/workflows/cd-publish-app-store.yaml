@@ -49,11 +49,24 @@ jobs:
 
           Install-Module -Name StoreBroker
 
+          # Debug: Check if environment variables are set
+          Write-Host "Tenant ID length: $($env:TENANT_ID.Length)"
+          Write-Host "Client ID length: $($env:CLIENT_ID.Length)"
+          Write-Host "Client Secret length: $($env:CLIENT_SECRET.Length)"
+          Write-Host "App ID length: $($env:APP_ID.Length)"
+
           $clientSecret = ConvertTo-SecureString $env:CLIENT_SECRET -AsPlainText -Force
 
           $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
 
-          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred
+          Write-Host "Attempting to authenticate with Microsoft Store..."
+          try {
+            Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred -Verbose
+            Write-Host "Authentication successful"
+          } catch {
+            Write-Host "Authentication failed: $($_.Exception.Message)"
+            throw
+          }
 
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           

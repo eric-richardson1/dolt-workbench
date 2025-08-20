@@ -1,4 +1,4 @@
-name: Publish to Windows App Store
+name: Publish to App Store
 on:
   workflow_dispatch:
     inputs:
@@ -10,6 +10,13 @@ on:
         description: Workflow Run ID
         required: true
         type: string
+      platform:
+        description: mac or windows
+        required: true
+        options:
+          - mac
+          - windows
+
   workflow_call:
     inputs:
       release-version:
@@ -21,9 +28,61 @@ on:
         required: false
         default: ${{ github.run_id }}
         type: string
+      platform:
+        description: mac or windows
+        required: true
+        type: string
 
 jobs:
+  publish-mac-store:
+    if: ${{ inputs.platform == 'mac' }}
+    name: Publish to Mac app store
+    runs-on: macos-14
+    steps:
+      - name: Download .pkg artifact
+        id: download-artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: mac-${{ inputs.release-version }}
+          path: dist
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.workflow-run-id }}
+
+      - name: Get PKG path
+        id: get-pkg-path
+        run: |
+          PKG=$(ls dist | head -n1)
+          echo "pkg_path=${{ steps.download-artifact.outputs.download-path }}/$PKG" >> $GITHUB_OUTPUT
+
+      - name: Make private key file
+        id: make-key-file
+        run: |
+          echo ${{ secrets.APPSTORE_API_PRIVATE_KEY }} > AuthKey_${{ secrets.API_KEY_ID }}.p8
+          echo "key_path=$(pwd)/AuthKey_${{ secrets.API_KEY_ID }}.p8" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Install fastlane
+        run: gem install fastlane
+
+      - name: Publish to Mac store
+        env:
+          KEY_ID: ${{ vars.APPSTORE_API_KEY_ID }}
+          ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
+          PRIVATE_KEY_PATH: ${{ steps.make-key-file.outputs.key_path }}
+          PKG_PATH: ${{ steps.get-pkg-path.outputs.pkg_path }}
+          RELEASE_NOTES: "Bug fixes and improvements"
+        run: bundle exec fastlane release_workbench
+
   publish-windows-store:
+    if: ${{ inputs.platform == 'windows' }}
     name: Publish to Windows app store
     runs-on: windows-2022
     steps:
@@ -35,10 +94,6 @@ jobs:
           path: dist
           github-token: ${{ github.token }}
           run-id: ${{ inputs.workflow-run-id }}
-
-      - name: debug
-        run: |
-          mv ${{ steps.download-artifact.outputs.download-path }}/Dolt-Workbench-win-x64.appx ${{ steps.download-artifact.outputs.download-path }}/Dolt-Workbench-win-x64-draft.appx
 
       - name: Publish to Microsoft Store
         shell: pwsh
@@ -57,7 +112,7 @@ jobs:
 
           $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
 
-          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred -Verbose
+          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred
 
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           

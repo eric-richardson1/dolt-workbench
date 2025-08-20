@@ -64,6 +64,8 @@ jobs:
           Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64.appx -UploadUrl ($submission.fileUploadUrl)
 
           Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
+          
+          Complete-ApplicationSubmission -AppId $env:APP_ID -SubmissionId ($submission.id)
 
 
 

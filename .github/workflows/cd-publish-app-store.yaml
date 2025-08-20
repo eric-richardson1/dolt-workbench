@@ -57,8 +57,8 @@ jobs:
       - name: Make private key file
         id: make-key-file
         run: |
-          echo ${{ secrets.APPSTORE_API_PRIVATE_KEY }} > AuthKey_${{ secrets.API_KEY_ID }}.p8
-          echo "key_path=$(pwd)/AuthKey_${{ secrets.API_KEY_ID }}.p8" >> $GITHUB_OUTPUT
+          echo ${{ secrets.APPSTORE_API_PRIVATE_KEY }} > AuthKey_${{ vars.APPSTORE_API_KEY_ID }}.p8
+          echo "key_path=$(pwd)/AuthKey_${{ vars.APPSTORE_API_KEY_ID }}.p8" >> $GITHUB_OUTPUT
 
       - name: Checkout code
         uses: actions/checkout@v3

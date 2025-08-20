@@ -57,11 +57,15 @@ jobs:
 
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           
-          echo $submission
-
-          $submission.listings["en-us"].baseListing.releaseNotes = "this is a test submission"
+          $submission.listings."en-us".baseListing.releaseNotes = "this is a test submission"
           
-          echo $submission
+          ls $env:APPX_PATH
+          
+          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64.appx -UploadUrl ($submission.fileUploadUrl)
+
+          Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
+
+
 
 #          $submission = Add-ApplicationPackage -AppId $env:APP_ID -Submission $submission -FilePath $env:APPX_PATH
 #

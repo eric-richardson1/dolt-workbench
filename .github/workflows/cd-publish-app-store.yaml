@@ -61,22 +61,16 @@ jobs:
 
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           
-          Write-Host "Original release notes: $($submission.listings.'en-us'.baseListing.releaseNotes)"
-          
           $submission.listings."en-us".baseListing.releaseNotes = "this is a test submission"
           
           Write-Host "Modified release notes: $($submission.listings.'en-us'.baseListing.releaseNotes)"
           
           ls $env:APPX_PATH
           
-          Write-Host "Submitting changes to Microsoft Store..."
           $updatedSubmission = Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
           
-          Write-Host "Server returned release notes: $($updatedSubmission.listings.'en-us'.baseListing.releaseNotes)"
+#          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64-draft.appx -UploadUrl ($updatedSubmission.fileUploadUrl)
           
-          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64-draft.appx -UploadUrl ($updatedSubmission.fileUploadUrl)
-          
-          Complete-ApplicationSubmission -AppId $env:APP_ID -SubmissionId ($updatedSubmission.id)
 
 
 

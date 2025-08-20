@@ -49,66 +49,11 @@ jobs:
 
           Install-Module -Name StoreBroker
 
-          # Debug: Check if environment variables are set
-          Write-Host "Tenant ID length: $($env:TENANT_ID.Length)"
-          Write-Host "Client ID length: $($env:CLIENT_ID.Length)"
-          Write-Host "Client Secret length: $($env:CLIENT_SECRET.Length)"
-          Write-Host "App ID length: $($env:APP_ID.Length)"
-
           $clientSecret = ConvertTo-SecureString $env:CLIENT_SECRET -AsPlainText -Force
 
           $cred = New-Object System.Management.Automation.PSCredential $env:CLIENT_ID, $clientSecret
 
-          # Test OAuth2 token directly to get better error information
-          Write-Host "Testing OAuth2 token request directly..."
-          $tokenUrl = "https://login.microsoftonline.com/$env:TENANT_ID/oauth2/v2.0/token"
-          $body = @{
-            grant_type = "client_credentials"
-            client_id = $env:CLIENT_ID
-            client_secret = $env:CLIENT_SECRET
-            scope = "https://manage.devcenter.microsoft.com/.default"
-          }
-          
-          Write-Host "Also testing with legacy endpoint and resource..."
-          $legacyTokenUrl = "https://login.microsoftonline.com/$env:TENANT_ID/oauth2/token"
-          $legacyBody = @{
-            grant_type = "client_credentials"
-            client_id = $env:CLIENT_ID
-            client_secret = $env:CLIENT_SECRET
-            resource = "https://manage.devcenter.microsoft.com"
-          }
-          
-          try {
-            $response = Invoke-RestMethod -Uri $tokenUrl -Method Post -Body $body -ContentType "application/x-www-form-urlencoded"
-            Write-Host "OAuth2 v2.0 token request successful with devcenter scope"
-          } catch {
-            Write-Host "OAuth2 v2.0 token request failed: $($_.Exception.Message)"
-            if ($_.ErrorDetails.Message) {
-              Write-Host "Error details: $($_.ErrorDetails.Message)"
-            }
-            
-            # Try legacy endpoint
-            Write-Host "Trying legacy OAuth2 endpoint..."
-            try {
-              $legacyResponse = Invoke-RestMethod -Uri $legacyTokenUrl -Method Post -Body $legacyBody -ContentType "application/x-www-form-urlencoded"
-              Write-Host "Legacy OAuth2 token request successful"
-            } catch {
-              Write-Host "Legacy OAuth2 token request also failed: $($_.Exception.Message)"
-              if ($_.ErrorDetails.Message) {
-                Write-Host "Legacy error details: $($_.ErrorDetails.Message)"
-              }
-              throw
-            }
-          }
-
-          Write-Host "Attempting to authenticate with Microsoft Store..."
-          try {
-            Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred -Verbose
-            Write-Host "Authentication successful"
-          } catch {
-            Write-Host "Authentication failed: $($_.Exception.Message)"
-            throw
-          }
+          Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred -Verbose
 
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           

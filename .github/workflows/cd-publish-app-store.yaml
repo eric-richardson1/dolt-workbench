@@ -17,6 +17,7 @@ on:
         options:
           - mac
           - windows
+          - both
 
   workflow_call:
     inputs:
@@ -36,7 +37,7 @@ on:
 
 jobs:
   publish-mac-store:
-    if: ${{ inputs.platform == 'mac' }}
+    if: ${{ inputs.platform == 'mac' || inputs.platform == 'both' }}
     name: Publish to Mac app store
     runs-on: macos-14
     steps:
@@ -87,7 +88,7 @@ jobs:
         run: bundle exec fastlane release_workbench
 
   publish-windows-store:
-    if: ${{ inputs.platform == 'windows' }}
+    if: ${{ inputs.platform == 'windows' || inputs.platform == 'both' }}
     name: Publish to Windows app store
     runs-on: windows-2022
     steps:
@@ -125,13 +126,10 @@ jobs:
           
           Write-Host "Modified release notes: $($submission.listings.'en-us'.baseListing.releaseNotes)"
           
-          ls $env:APPX_PATH
+          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64-draft.appx -UploadUrl ($submission.fileUploadUrl)
           
-          $updatedSubmission = Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
+          Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
           
-#          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64-draft.appx -UploadUrl ($updatedSubmission.fileUploadUrl)
-          
-
 
 
 #          $submission = Add-ApplicationPackage -AppId $env:APP_ID -Submission $submission -FilePath $env:APPX_PATH

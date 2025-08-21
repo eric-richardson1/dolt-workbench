@@ -9,16 +9,11 @@ platform :mac do
           key_filepath: ENV["PRIVATE_KEY_PATH"]
       )
 
-#       upload_to_testflight(
-#         api_key: api_key,
-#         pkg: ENV["PKG_PATH"]
-#       )
-
       deliver(
         api_key: api_key,
         app_identifier: "com.dolthub.dolt-workbench",
         username: "eric@dolthub.com",
-        skip_binary_upload: true,
+        pkg: ENV["PKG_PATH"],
         skip_metadata: false,
         skip_screenshots: true,
         release_notes: { "en-US" => ENV["RELEASE_NOTES"] },

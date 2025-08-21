@@ -126,7 +126,7 @@ jobs:
           
           Write-Host "Modified release notes: $($submission.listings.'en-us'.baseListing.releaseNotes)"
           
-          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64-draft.appx -UploadUrl ($submission.fileUploadUrl)
+          Set-SubmissionPackage -PackagePath $env:APPX_PATH/Dolt-Workbench-win-x64.appx -UploadUrl ($submission.fileUploadUrl)
           
           Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
           

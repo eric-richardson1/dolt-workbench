@@ -89,7 +89,7 @@ jobs:
 
   publish-windows-store:
     if: ${{ inputs.platform == 'windows' || inputs.platform == 'both' }}
-    name: Publish to Windows app store
+    name: Publish to Windows App Store
     runs-on: windows-2022
     steps:
       - name: Download .appx artifact

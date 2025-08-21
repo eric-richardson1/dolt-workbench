@@ -9,10 +9,10 @@ platform :mac do
           key_filepath: ENV["PRIVATE_KEY_PATH"]
       )
 
-      upload_to_testflight(
-        api_key: api_key,
-        pkg: ENV["PKG_PATH"]
-      )
+#       upload_to_testflight(
+#         api_key: api_key,
+#         pkg: ENV["PKG_PATH"]
+#       )
 
       deliver(
         api_key: api_key,

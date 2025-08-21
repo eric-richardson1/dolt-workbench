@@ -120,24 +120,13 @@ jobs:
 
           Set-StoreBrokerAuthentication -TenantId $env:TENANT_ID -Credential $cred
 
-        # 1) Clone current published submission
           $submission = New-ApplicationSubmission -AppId $env:APP_ID -Force
           
-          # 2) Edit metadata
           $submission.listings.'en-us'.baseListing.releaseNotes = 'this is a test submission'
 
-        # 3) Upload package (see note about .appxupload below)
           $pkg = Join-Path $env:APPX_PATH 'Dolt-Workbench-win-x64.appx'
           Set-SubmissionPackage -PackagePath $pkg -UploadUrl $submission.fileUploadUrl
           
-          # 4) Send updated JSON back to the API
           Set-ApplicationSubmission -AppId $env:APP_ID -UpdatedSubmission $submission
           
-          # 5) Commit so it enters certification (and shows up in the UI)
           Complete-ApplicationSubmission -AppId $env:APP_ID -SubmissionId $submission.id
-          
-
-
-#          $submission = Add-ApplicationPackage -AppId $env:APP_ID -Submission $submission -FilePath $env:APPX_PATH
-#
-#          $submission = Update-ApplicationSubmission -AppId $env:APP_ID -Submission $submission

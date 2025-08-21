@@ -84,6 +84,7 @@ jobs:
           ISSUER_ID: ${{ vars.APPSTORE_ISSUER_ID }}
           PRIVATE_KEY_PATH: ${{ steps.make-key-file.outputs.key_path }}
           PKG_PATH: ${{ steps.get-pkg-path.outputs.pkg_path }}
+          RELEASE_VERSION: ${{ inputs.release-version }}
           RELEASE_NOTES: "Bug fixes and improvements"
         run: bundle exec fastlane release_workbench
 

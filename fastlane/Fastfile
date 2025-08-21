@@ -11,6 +11,7 @@ platform :mac do
 
       deliver(
         api_key: api_key,
+        app_version: ENV["RELEASE_VERSION"],
         app_identifier: "com.dolthub.dolt-workbench",
         username: "eric@dolthub.com",
         pkg: ENV["PKG_PATH"],

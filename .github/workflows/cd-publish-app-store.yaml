@@ -40,6 +40,9 @@ jobs:
     name: Publish to Mac app store
     runs-on: macos-14
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Download .pkg artifact
         id: download-artifact
         uses: actions/download-artifact@v5
@@ -62,10 +65,8 @@ jobs:
           cat > "$KEY" <<'EOF'
           ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           EOF
-          echo "key_path=$(pwd)/$KEY" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout code
-        uses: actions/checkout@v3
+          echo "key_path=$PWD/$KEY" >> "$GITHUB_OUTPUT"
+          echo $key_path
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

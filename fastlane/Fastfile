@@ -17,6 +17,7 @@ platform :mac do
         pkg: ENV["PKG_PATH"],
         skip_metadata: false,
         skip_screenshots: true,
+        precheck_include_in_app_purchases: false,
         release_notes: { "en-US" => ENV["RELEASE_NOTES"] },
         submit_for_review: false,
         automatic_release: false,

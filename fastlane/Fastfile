@@ -21,7 +21,8 @@ platform :mac do
         skip_screenshots: true,
         release_notes: { "en-US" => ENV["RELEASE_NOTES"] },
         submit_for_review: false,
-        automatic_release: false
+        automatic_release: false,
+        force: true
       )
   end
 end

@@ -46,7 +46,7 @@ jobs:
 
       - name: Raise PR and merge
         run: |
-          $url=$(gh pr create --base main --head release/${{ needs.format-version.outputs.version }} --title "Update web/package.json version to ${{ needs.format-version.outputs.version }} --body "Increment version")
+          $url=$(gh pr create --base main --head release/${{ needs.format-version.outputs.version }} --title "Update web/package.json version to ${{ needs.format-version.outputs.version }}" --body "Increment version")
           gh pr merge --merge $url
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

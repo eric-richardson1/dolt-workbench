@@ -47,7 +47,7 @@ jobs:
       - name: Raise PR and merge
         run: |
           gh pr create --base main --head release/${{ needs.format-version.outputs.version }} --title "Update web/package.json version to ${{ needs.format-version.outputs.version }}" --body "Increment version"
-          gh pr merge --merge release/${{ needs.format-version.outputs.version }}
+          gh pr merge --merge --delete-branch release/${{ needs.format-version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

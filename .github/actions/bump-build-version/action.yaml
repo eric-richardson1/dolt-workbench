@@ -47,13 +47,13 @@ runs:
       uses: EndBug/add-and-commit@v9
       with:
         message: "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }}"
-        new_branch: release/${{ needs.format-version.outputs.version }}
+        new_branch: release/${{ inputs.platform }}-${{ steps.bump-version.outputs.new_version }}
 
     - name: Raise PR and merge
       if: ${{ inputs.commit == 'true' }}
       run: |
-        gh pr create --base main --head release/${{ inputs.platform }}-${{ needs.format-version.outputs.version }} --title "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }} --body "Increment version"
-        gh pr merge release/${{ inputs.platform }}-${{ needs.format-version.outputs.version }} --merge --delete-branch
+        gh pr create --base main --head release/${{ inputs.platform }}-${{ steps.bump-version.outputs.new_version }} --title "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }}" --body "Increment version"
+        gh pr merge --merge --delete-branch release/${{ inputs.platform }}-${{ steps.bump-version.outputs.new_version }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: bash

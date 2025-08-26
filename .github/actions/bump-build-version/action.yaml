@@ -4,6 +4,9 @@ inputs:
   platform:
     description: Platform to update builder config yaml file
     required: true
+  token:
+    description: GitHub token
+    required: true
   commit:
     description: If true, will add and commit the new build version. Default false.
     required: false
@@ -55,5 +58,5 @@ runs:
         gh pr create --base main --head release/${{ inputs.platform }}-${{ steps.bump-version.outputs.new_version }} --title "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }}" --body "Increment version"
         gh pr merge --merge --delete-branch release/${{ inputs.platform }}-${{ steps.bump-version.outputs.new_version }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
       shell: bash

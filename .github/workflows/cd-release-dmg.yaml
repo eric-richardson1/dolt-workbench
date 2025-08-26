@@ -25,7 +25,7 @@ jobs:
       - name: Bump build version
         uses: ./.github/actions/bump-build-version
         with:
-          build-config-file: web/build/builder-dmg-config.yaml
+          platform: dmg
 
       - uses: actions/setup-node@v4
         with:
@@ -118,5 +118,5 @@ jobs:
 
       - uses: ./.github/actions/bump-build-version
         with:
-          build-config-file: web/build/builder-dmg-config.yaml
+          platform: dmg
           commit: true

@@ -29,7 +29,7 @@ jobs:
       - name: Bump Windows build version
         uses: ./.github/actions/bump-build-version
         with:
-          build-config-file: web/build/builder-win-config.yaml
+          platform: win
 
       - uses: actions/setup-node@v4
         with:
@@ -93,5 +93,5 @@ jobs:
 
       - uses: ./.github/actions/bump-build-version
         with:
-          build-config-file: web/build/builder-win-config.yaml
+          platform: win
           commit: true

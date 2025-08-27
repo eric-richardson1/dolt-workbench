@@ -93,6 +93,8 @@ jobs:
     if: ${{ always() && needs.create-release.result == 'success' && !cancelled() }}
     runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v3
+
       - name: Create PR and merge
         run: |
           gh pr create --base main --head release/${{ needs.create-release.outputs.release_version }} --title "Update versions for release ${{ needs.create-release.outputs.release_version }}" --body "Increment versions"

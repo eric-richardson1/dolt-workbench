@@ -6,11 +6,6 @@ on:
         description: GitHub Release Version Number
         required: true
         type: string
-      via-call:
-        description: Determines if this workflow was called by another workflow
-        required: false
-        default: false
-        type: boolean
 
   workflow_call:
     inputs:
@@ -23,6 +18,9 @@ on:
         required: false
         default: true
         type: boolean
+
+env:
+  VIA_CALL: ${{ inputs.via-call || false }}
 
 jobs:
   build-linux:
@@ -100,13 +98,15 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [[ ${{ inputs.via-call }} == 'true' ]]; then
+          if [[ ${{ env.VIA_CALL }} == 'true' ]]; then
             echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           else
             echo "branch=build/linux-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Checkout correct branch
         run: git switch -C ${{ steps.branch-to-update.outputs.branch }}

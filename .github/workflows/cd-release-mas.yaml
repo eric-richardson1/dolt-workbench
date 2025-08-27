@@ -128,7 +128,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ ${{ inputs.via-call }} ]; then
+          if [[ ${{ inputs.via-call }} == 'true' ]]; then
             echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           else
             echo "branch=build/mas-${{ inputs.release-version }}" >> $GITHUB_OUTPUT

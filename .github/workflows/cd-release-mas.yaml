@@ -113,7 +113,20 @@ jobs:
       group: commit-build-version
       cancel-in-progress: false
     steps:
+      - name: Get branch to checkout
+        id: branch-to-update
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ $EVENT_NAME == "workflow_dispatch" ]; then
+            echo "branch=build/mas-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
+          fi
+
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.branch-to-update.outputs.branch }}
 
       - uses: ./.github/actions/bump-build-version
         with:

@@ -56,12 +56,13 @@ runs:
       uses: EndBug/add-and-commit@v9
       with:
         message: "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }} [skip ci]"
+        pull: ${{ steps.current-branch.outputs.branch != format('build/{0}', inputs.platform) && format('origin {0}', steps.current-branch.outputs.branch) || '' }}
         push: --set-upstream origin ${{ steps.current-branch.outputs.branch }}
 
     - name: Raise PR and merge
       if: ${{ inputs.commit == 'true' }}
       run: |
-        CURRENT_BRANCH=$(git branch --show-current)
+        CURRENT_BRANCH=${{ steps.current-branch.outputs.branch }}
         if [[ $CURRENT_BRANCH == build/* ]]
         then
           gh pr create --base main --head $CURRENT_BRANCH --title "Update ${{ inputs.platform }} build version to ${{ steps.bump-version.outputs.new_version }}" --body "Increment version"

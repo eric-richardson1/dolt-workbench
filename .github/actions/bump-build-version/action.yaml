@@ -45,11 +45,18 @@ runs:
         echo "New buildVersion in ${{ steps.filepath.outputs.build-config-file }} is ${{ steps.bump-version.outputs.new_version }}"
       shell: bash
 
+    - name: Get current branch
+      id: current-branch
+      run: |
+        echo "branch=$(git branch --show-current)" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Add and commit new build version
       if: ${{ inputs.commit == 'true' }}
       uses: EndBug/add-and-commit@v9
       with:
         message: "Update ${{ steps.filepath.outputs.build-config-file }} buildVersion to ${{ steps.bump-version.outputs.new_version }} [skip ci]"
+        push: --set-upstream origin ${{ steps.current-branch.outputs.branch }}
 
     - name: Raise PR and merge
       if: ${{ inputs.commit == 'true' }}

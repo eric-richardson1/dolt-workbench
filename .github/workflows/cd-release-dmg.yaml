@@ -137,7 +137,7 @@ jobs:
           if [[ ${{ env.VIA_CALL }} == 'true' ]]; then
             echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           else
-            echo "branch=build/dmg-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
+            echo "branch=build/dmg" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v3

@@ -100,9 +100,10 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ ${{ inputs.via-call }} ]; then
+          if [ ${{ inputs.via-call == 'true' }} ]; then
             echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           else
+            echo "hello"
             echo "branch=build/linux-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           fi
 
@@ -110,8 +111,6 @@ jobs:
 
       - name: Checkout correct branch
         run: git switch -C ${{ steps.branch-to-update.outputs.branch }}
-
-
 
       - uses: ./.github/actions/bump-build-version
         with:

@@ -88,12 +88,13 @@ jobs:
       release-version: ${{ needs.create-release.outputs.release_version }}
 
   create-pr-and-merge:
+    name: Create PR and merge
     needs: [create-release, build-mas, build-windows, build-dmg, build-linux]
     if: ${{ always() && needs.create-release.result == 'success' && !cancelled() }}
     runs-on: ubuntu-22.04
     steps:
       - name: Create PR and merge
-        run:
+        run: |
           gh pr create --base main --head release/${{ needs.create-release.outputs.release_version }} --title "Update versions for release ${{ needs.create-release.outputs.release_version }}" --body "Increment versions"
           gh pr merge --merge --delete-branch release/${{ needs.create-release.outputs.release_version }}
         env:

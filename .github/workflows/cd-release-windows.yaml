@@ -6,6 +6,11 @@ on:
         description: GitHub Release Version Number
         required: true
         type: string
+      via-call:
+        description: Determines if this workflow was called by another workflow
+        required: false
+        default: false
+        type: boolean
 
   workflow_call:
     inputs:
@@ -13,6 +18,11 @@ on:
         description: Github Release Version Number
         required: true
         type: string
+      via-call:
+        description: Determines if this workflow was called by another workflow
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build-windows:
@@ -98,18 +108,17 @@ jobs:
     steps:
       - name: Get branch to checkout
         id: branch-to-update
-        env:
-          EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [ $EVENT_NAME == "workflow_dispatch" ]; then
-            echo "branch=build/windows-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
-          else
+          if [ ${{ inputs.via-call }} ]; then
             echo "branch=release/${{ inputs.release-version }}" >> $GITHUB_OUTPUT
+          else
+            echo "branch=build/windows-${{ inputs.release-version }}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.branch-to-update.outputs.branch }}
+
+      - name: Checkout correct branch
+        run: git switch -C ${{ steps.branch-to-update.outputs.branch }}
 
       - uses: ./.github/actions/bump-build-version
         with:

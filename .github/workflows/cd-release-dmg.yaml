@@ -84,6 +84,7 @@ jobs:
       - name: Build dmg package
         working-directory: web
         run: |
+          ulimit -n 20240
           yarn build:dmg
 
       - name: Create .env file for signing

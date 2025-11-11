@@ -83,8 +83,10 @@ jobs:
 
       - name: Build dmg package
         working-directory: web
+        env:
+          ELECTRON_BUILDER_MAX_PARALLELS: "2"
         run: |
-          ulimit -n 20240
+          ulimit -n 65536
           yarn build:dmg
 
       - name: Create .env file for signing

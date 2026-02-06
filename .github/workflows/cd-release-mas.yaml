@@ -93,14 +93,32 @@ jobs:
         working-directory: web
         env:
           ELECTRON_BUILDER_MAX_PARALLELS: "2"
+          DEBUG: "electron-builder,@electron/universal,@electron/asar"
         run: |
           sudo sysctl -w kern.maxfiles=1048576
           sudo sysctl -w kern.maxfilesperproc=1048576
           sudo launchctl limit maxfiles 1048576 1048576
           ulimit -n 65536
-          yarn build:graphql
-          npx nextron build --config ./build/builder-mas-config.yaml 2>&1
-          echo "EXIT CODE: $?"
+          yarn build:mas
+
+      - name: Debug universal merge
+        if: always()
+        working-directory: web
+        run: |
+          node -e "
+          const { makeUniversalApp } = require('@electron/universal');
+          makeUniversalApp({
+            x64AppPath: 'dist/mas-universal-x64-temp/DoltWorkbench.app',
+            arm64AppPath: 'dist/mas-universal-arm64-temp/DoltWorkbench.app',
+            outAppPath: 'dist/mas-universal-debug/DoltWorkbench.app',
+            force: true
+          }).then(() => console.log('SUCCESS'))
+            .catch(err => {
+              console.error('MERGE FAILED:', err.message);
+              console.error(err.stack);
+              process.exit(1);
+            });
+          "
       
       - name: Debug dist contents
         if: always()

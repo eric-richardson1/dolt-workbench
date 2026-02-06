@@ -93,12 +93,19 @@ jobs:
         working-directory: web
         env:
           ELECTRON_BUILDER_MAX_PARALLELS: "2"
+          NODE_OPTIONS: "--trace-deprecation"
         run: |
           sudo sysctl -w kern.maxfiles=1048576
           sudo sysctl -w kern.maxfilesperproc=1048576
           sudo launchctl limit maxfiles 1048576 1048576
           ulimit -n 65536
           yarn build:mas
+      
+      - name: Debug dist contents
+        if: always()
+        working-directory: web
+        run: |
+          ls -laR dist/mas-universal/ || true
 
       - name: Upload app store artifact
         uses: actions/upload-artifact@v4

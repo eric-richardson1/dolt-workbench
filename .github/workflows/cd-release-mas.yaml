@@ -90,17 +90,17 @@ jobs:
             nextjs-${{ runner.os }}-
 
       - name: Build MAS package
-          working-directory: web
-          env:
-            ELECTRON_BUILDER_MAX_PARALLELS: "2"
-          run: |
-            sudo sysctl -w kern.maxfiles=1048576
-            sudo sysctl -w kern.maxfilesperproc=1048576
-            sudo launchctl limit maxfiles 1048576 1048576
-            ulimit -n 65536
-            yarn build:graphql
-            npx nextron build --config ./build/builder-mas-config.yaml 2>&1; echo
-            "EXIT CODE: $?"
+        working-directory: web
+        env:
+          ELECTRON_BUILDER_MAX_PARALLELS: "2"
+        run: |
+          sudo sysctl -w kern.maxfiles=1048576
+          sudo sysctl -w kern.maxfilesperproc=1048576
+          sudo launchctl limit maxfiles 1048576 1048576
+          ulimit -n 65536
+          yarn build:graphql
+          npx nextron build --config ./build/builder-mas-config.yaml 2>&1
+          echo "EXIT CODE: $?"
       
       - name: Debug dist contents
         if: always()

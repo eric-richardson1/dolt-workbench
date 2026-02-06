@@ -52,7 +52,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install dependencies
         uses: ./.github/actions/install-dependencies
@@ -93,7 +93,7 @@ jobs:
         working-directory: web
         env:
           ELECTRON_BUILDER_MAX_PARALLELS: "2"
-          NODE_OPTIONS: "--trace-deprecation"
+          DEBUG: "electron-builder,@electron/universal,@electron/asar"
         run: |
           sudo sysctl -w kern.maxfiles=1048576
           sudo sysctl -w kern.maxfilesperproc=1048576
@@ -105,7 +105,12 @@ jobs:
         if: always()
         working-directory: web
         run: |
-          ls -laR dist/mas-universal/ || true
+          echo "=== dist ==="
+          ls -la dist/ || echo "dist/ does not exist"
+          echo "=== x64 temp ==="
+          ls -la dist/mas-universal-x64-temp/ || echo "x64 temp does not exist"
+          echo "=== arm64 temp ==="
+          ls -la dist/mas-universal-arm64-temp/ || echo "arm64 temp does not exist"
 
       - name: Upload app store artifact
         uses: actions/upload-artifact@v4

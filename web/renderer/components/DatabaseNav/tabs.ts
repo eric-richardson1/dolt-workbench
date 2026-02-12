@@ -1,5 +1,5 @@
 export const tabs = [
-  "Database",
+  "THE UPDATE WORKED",
   "About",
   "Commit Log",
   "Releases",
